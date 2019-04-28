@@ -21,6 +21,8 @@ urlpatterns = [
 
     # создать свои собственные представления, если нужно организовать другое поведение.
     # path('', include('django.contrib.auth.urls')),
-    # path('', views.dashboard, name='dashboard'),
+
+    # registration (new user)
+    path('register/', views.register, name='register'),
 
 ]
