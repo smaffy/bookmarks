@@ -18,6 +18,10 @@
       <sourceFolder url="file://$MODULE_DIR$/bookmarks" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/account/migrations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/account" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/account/static/css" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/account/static" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/templates/account" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/templates/registration" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
