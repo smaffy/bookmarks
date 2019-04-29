@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
 from . import views
@@ -28,4 +28,6 @@ urlpatterns = [
     # edit profile
     path('edit/', views.edit, name='edit'),
 
+    # auth with Facebook, Twitter, Google
+    path('social-auth/', include('social_django.urls', namespace='social')),
 ]

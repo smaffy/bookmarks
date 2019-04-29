@@ -22,6 +22,12 @@
       <sourceFolder url="file://$MODULE_DIR$/account/static" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/account" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/registration" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/profileimg" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/admin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/andrej" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/kesha" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/pavel" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
