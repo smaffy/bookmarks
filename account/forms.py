@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.safestring import  mark_safe
 
 from .models import Profile
 
@@ -13,7 +14,9 @@ class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
     tos = forms.BooleanField(widget=forms.CheckboxInput,
-                             label=_('I agree to the Privacy Policy and Terms of Use'),
+                             label=mark_safe('I agree to the <a href="ppolice/">Privacy Policy</a> '
+                                             'and <a href="terms/">Terms and Conditions</a>.'),
+                             # label='I agree to the Privacy Policy and Terms of Use',
                              error_messages={'required': "You must agree to the terms to register"})
 
     class Meta:

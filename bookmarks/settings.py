@@ -25,7 +25,7 @@ SECRET_KEY = 'pem7+_&do=%r39$j$p7si)2i%p$pd7u*te9bn9mno4ywt7@^_4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'smafy.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'smafy.com', '0.0.0.0', 'smaffy.com']
 
 SITE_ID = 2
 
@@ -33,6 +33,8 @@ SITE_ID = 2
 # Application definition
 
 INSTALLED_APPS = [
+    "sslserver",            # runsslserver 0.0.0.0:8888, smaffy.com:8888
+
     'account.apps.AccountConfig',
 
     'django.contrib.admin',
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'social_django',
+    # 'django_extensions',            # runserver_plus --cert /tmp/cert
 ]
 
 MIDDLEWARE = [
@@ -53,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'bookmarks.urls'
@@ -69,6 +74,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -154,12 +162,20 @@ send_mail('Django mail', 'This e-mail was sent with Django.', 'rudakovacz@gmail.
 """
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'account.authentication.EmailAuthBackend',
+    'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+
+    'account.authentication.EmailAuthBackend',
+
 ]
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1231471283677887'                       # Facebook App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fd25cb7aacb45c58538e4963bd9bba3b'    # Facebook App Secret
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'dashboard'

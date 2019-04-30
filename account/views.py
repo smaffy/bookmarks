@@ -72,3 +72,11 @@ def edit(request):
         profile_form = ProfileEditForm(instance=request.user.profile)
 
     return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+def terms(request):
+    return render(request, 'account/terms.html', {'section': 'terms'})
+
+
+def ppolice(request):
+    return render(request, 'account/ppolice.html', {'section': 'ppolice'})

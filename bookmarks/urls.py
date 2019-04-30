@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
+    # auth with Facebook, Twitter, Google
+    path('oauth/', include('social_django.urls', namespace='social')),
+
 ]
 
 if settings.DEBUG:
