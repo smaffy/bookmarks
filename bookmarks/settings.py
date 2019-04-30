@@ -174,6 +174,10 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_FACEBOOK_KEY = '1231471283677887'                       # Facebook App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fd25cb7aacb45c58538e4963bd9bba3b'    # Facebook App Secret
 
+SOCIAL_AUTH_TWITTER_KEY = 'MuwxaFEU05NNeemTpYiBW1P5c'               # Twitter Consumer Key
+SOCIAL_AUTH_TWITTER_SECRET = 'Ffw6UxxemIViI9LhP71QUOMR2CehTfoRLARrMEG8es9FDBttr3'    # Twitter Consumer Secret
+
+
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 LOGIN_URL = 'login'
