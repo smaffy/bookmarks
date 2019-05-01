@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.utils.safestring import  mark_safe
+from django.utils.safestring import mark_safe
 
 from .models import Profile
 
@@ -46,4 +46,4 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('date_of_birth', 'photo')
+        fields = ('birthdate', 'photo')

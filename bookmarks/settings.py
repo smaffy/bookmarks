@@ -27,13 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'smafy.com', '0.0.0.0', 'smaffy.com']
 
-SITE_ID = 2
+SITE_ID = 1
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "sslserver",            # runsslserver 0.0.0.0:8888, smaffy.com:8888
+    "sslserver",            # runsslserver smaffy.com:8888, 0.0.0.0:8888
 
     'account.apps.AccountConfig',
 
@@ -162,6 +162,7 @@ send_mail('Django mail', 'This e-mail was sent with Django.', 'rudakovacz@gmail.
 """
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
 
@@ -174,12 +175,21 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_FACEBOOK_KEY = '1231471283677887'                       # Facebook App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fd25cb7aacb45c58538e4963bd9bba3b'    # Facebook App Secret
 
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_link']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'fields': 'id, name, email, picture.type(large), link'
+}
+SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [
+    ('name', 'name'),
+    ('email', 'email'),
+    ('photo', 'picture'),
+    ('link', 'profile_url'),
+]
+
+
 SOCIAL_AUTH_TWITTER_KEY = 'MuwxaFEU05NNeemTpYiBW1P5c'               # Twitter Consumer Key
 SOCIAL_AUTH_TWITTER_SECRET = 'Ffw6UxxemIViI9LhP71QUOMR2CehTfoRLARrMEG8es9FDBttr3'    # Twitter Consumer Secret
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '783394098930-osgm0hvf6a58doshb12ppv0r98senrcu.apps.googleusercontent.com'  # Google Consumer Key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jWxcAyTlvG42Zx1oaEfSx0SQ'       # Google Consumer Secret
 
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'dashboard'
