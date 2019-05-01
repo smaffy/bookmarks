@@ -191,6 +191,23 @@ ul.messages li a.close {
 .social li.twitter { background:#00cffa; }
 .social li.google { background:#de1710; }
 
+.social2 {
+    float:left;
+}
+.social2 li {
+    list-style:none;
+    padding:10px 20px;
+    margin:0 0 10px 0;
+}
+.social2 li a {
+    width:100%;
+    height:100%;
+    display:block;
+    color:#fff;
+}
+.social2 li.facebook { background:#3b5399; }
+.social2 li.twitter { background:#00cffa; }
+.social2 li.google { background:#de1710; }
 
 /* images */
 

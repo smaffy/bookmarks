@@ -3,12 +3,28 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
     <h1>Dashboard</h1>
     <p>Welcome to your dashboard.</p>
+    <br>
 
-    <p>
-        You can <a href="{% url "edit" %}">edit your profile</a>
-        or <a href="{% url "password_change" %}">change your password</a>
-    </p>
+    <span class="user">
+        {% if request.user.is_authenticated %}
 
+            <t><b>  You logged in like:</b>
+            <br><br>
+            Username: {{ request.user.username }} <br>
+            First name: {{ request.user.first_name }} <br>
+            Last name: {{ request.user.last_name }} <br>
+            Email: {{ request.user.email }} <br>
+            <br>
+            <br>
+            You can <a href="{% url "edit" %}">edit your profile</a>. <br>
+
+            {% if request.user.password %}
+                Also you can <a href="{% url "password_change" %}">change your password</a> <br>
+            {% endif %}
+
+        {% endif %}
+    </span>
 {% endblock %}
