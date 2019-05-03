@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,23 +10,26 @@ from .models import Profile
 
 # without classes
 def user_login(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(request, username=cd['username'], password=cd['password'])
-
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponse('Authenticated successfully')
-                else:
-                    return HttpResponse('Disabled account')
-            else:
-                return HttpResponse('Invalid login')
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/account/')
     else:
-        form = LoginForm()
-        return render(request, 'account/login.html', {'form': form})
+        if request.method == 'POST':
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                user = authenticate(request, username=cd['username'], password=cd['password'])
+
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return HttpResponse('Authenticated successfully')
+                    else:
+                        return HttpResponse('Disabled account')
+                else:
+                    return HttpResponse('Invalid login')
+        else:
+            form = LoginForm()
+            return render(request, 'account/login.html', {'form': form})
 
 
 @login_required
@@ -45,7 +48,7 @@ def register(request):
             # Save the User object
             new_user.save()
             # Create the user profile
-            Profile.objects.create_userprofile(user=new_user)
+            Profile.objects.create(user=new_user)
             return render(request, 'account/register_done.html', {'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
