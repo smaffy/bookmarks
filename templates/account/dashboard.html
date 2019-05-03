@@ -6,12 +6,38 @@
 
     <h1>Dashboard</h1>
     <p>Welcome to your dashboard.</p>
+
     <br>
 
     <span class="user">
         {% if request.user.is_authenticated %}
 
-            <t><b>  You logged in like:</b>
+            {% if user.has_usable_password %}
+                <p>Classical account. Welcome, {{ request.user.first_name }}</p>
+            {% endif %}
+
+            {% if facebook_login %}
+                {% if user.has_usable_password %} additional login:  {% endif %}
+                <p>Facebook account. Connected as <t><a href="https://facebook.com/{{ facebook_login.extra_data.id }}/"
+                                   target="_blank">{{ facebook_login.extra_data.id }}</a></t></p>
+            {% endif %}
+
+            {% if twitter_login %}
+                {% if user.has_usable_password %} additional login:  {% endif %}
+                <p>Twitter account. Connected as <t><a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/"
+                                   target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></t></p>
+            {% endif %}
+
+            {% if google_login %}
+                {% if user.has_usable_password %} additional login:  {% endif %}
+                <p>Google account. Connected as <t><a href="https://google.com/{{ google_login.extra_data.access_token.screen_name }}/"
+                                  target="_blank">{{ google_login.uid }}</a></t></p>
+            {%  endif %}
+
+
+
+            <br>
+                <t><b>  You logged in like:</b></t>
             <br><br>
             Username: {{ request.user.username }} <br>
             First name: {{ request.user.first_name }} <br>
@@ -19,11 +45,14 @@
             Email: {{ request.user.email }} <br>
             <br>
             <br>
-            You can <a href="{% url "edit" %}">edit your profile</a>. <br>
 
-            {% if request.user.password %}
-                Also you can <a href="{% url "password_change" %}">change your password</a> <br>
-            {% endif %}
+            <p>You can <a href="{% url "edit" %}">edit your profile</a>. </p>
+
+            <p>You can config your <a href="{% url "settings" %}">login settings</a>.</p>
+
+            {% if user.has_usable_password %}
+                <p>Also you can <a href="{% url "password" %}">change your password</a></p>
+            {%  endif %}
 
         {% endif %}
     </span>

@@ -33,4 +33,6 @@ urlpatterns = [
     path('register/ppolice/', views.ppolice, name='ppolice'),
     path('register/terms/', views.terms, name='terms'),
 
+    path('settings/', views.settings, name='settings'),
+    path('settings/password/', views.password, name='password'),
 ]
