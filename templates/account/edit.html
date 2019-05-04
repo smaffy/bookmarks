@@ -13,11 +13,6 @@
     </form>
 
     <br>
-    <p>You can config your login settings.</p>
-    <form action={{ url 'settings' }} >
-        <button type="submit">Login settings</button>
-    </form>
-
     <p>You can config your <a href="{% url "settings" %}">login settings</a>.</p>
 
     {% if user.has_usable_password %}

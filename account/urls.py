@@ -35,4 +35,7 @@ urlpatterns = [
 
     path('settings/', views.settings, name='settings'),
     path('settings/password/', views.password, name='password'),
+
+    # exception AuthAlreadyAssociated
+    path('helpAuthAlreadyAssociated/', views.helpAuthAlreadyAssociated, name='helpAuthAlreadyAssociated'),
 ]

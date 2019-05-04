@@ -115,6 +115,10 @@ def ppolice(request):
     return render(request, 'account/ppolice.html', {'section': 'ppolice'})
 
 
+def helpAuthAlreadyAssociated(request):
+    return render(request, 'account/helpAuthAlreadyAssociated.html', {'section': 'helpAuthAlreadyAssociated'})
+
+
 @login_required
 def settings(request):
     user = request.user
