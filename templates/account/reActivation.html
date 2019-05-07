@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Activate account{% endblock %}
+{% block content %}
+    <h1 style="text-align: center"><b>Activate account</b></h1>
+    <p>
+        Now your account is "inactive".<br>
+        It is mean, in 30 days after last login your account will be fully deleted. <br>
+        And you will lose all your information and lose chance to restore it.<br>
+
+        <br>
+        We was send to your email for activation.
+        If you did not get email with confirmation link, or this link is invalid:
+        <br>
+        <br>
+    </p>
+    <p>Enter your e-mail address to obtain a new confirmation.</p>
+    <form action="." method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Send e-mail"></p>
+    </form>
+
+
+    <div  style="clear: both">
+    <hr>
+        If you decide delete your account forever you can use <a href="{% url 'harddelete' %}"> hard deletion </a>.<br>
+        <br>
+        <br>
+
+    </div>
+
+{% endblock %}

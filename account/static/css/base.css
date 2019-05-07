@@ -27,8 +27,17 @@ h1 {
     margin:10px 0 20px 0;
 }
 
+
+
 h2 {
     margin:30px 0 20px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    color: #bbb;
+    background-color: #bbb;
 }
 
 ol {
@@ -170,6 +179,7 @@ ul.messages li a.close {
 
 .login-form {
     float:left;
+    clear:both;
 }
 
 /* social-auth */

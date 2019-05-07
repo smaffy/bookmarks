@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete account{% endblock %}
+{% block content %}
+    <h1 style="text-align: center"><b>Delete account</b></h1>
+    <p>
+        In clicking this submit you will delete your account!<br>
+        It is mean, your account will be "inactive".<br>
+        In 30 days after last login your account will be fully deleted. <br>
+        It is mean you will lose all your information and lose chance to restore it.<br>
+
+        <br>
+    </p>
+
+    {% if request.user.email %}
+        <p> If you are sure, please confirm it: </p>
+
+        <div class="login-form">
+            <form action="{% url "softdelete" %}" method="post">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}" />
+                <p><input type="submit" value="Delete"></p>
+            </form>
+        </div>
+
+    {% else %}
+        You do not have email for restore account.
+        Please, add email in <a href="{% url "edit" %}">Edit profile</a>.
+
+    {% endif %}
+
+    <div  style="clear: both">
+        <br>
+        <br>
+        If you decide delete your account forever, you can use <a href="{% url 'harddelete' %}"> Hard Delete</a>.<br>
+        <br>
+        <br>
+        <hr>
+        Please, don't do that. We will miss you.... :'(
+    </div>
+
+{% endblock %}
+
+

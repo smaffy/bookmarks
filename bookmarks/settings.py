@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'phonenumber_field',
     'social_django',
     # 'django_extensions',            # runserver_plus --cert /tmp/cert
 ]
@@ -167,7 +168,8 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
 
-    'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
 
     'account.authentication.EmailAuthBackend',
 

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Activate account{% endblock %}
+{% block content %}
+    <h1 style="text-align: center"><b>Restore account</b></h1>
+    <p>
+        Your account is "inactive".<br>
+        It is mean, in 30 days after last login your account will be deleted. <br>
+        And you will lose all your information and lose chance to restore it.<br>
+
+        <br>
+        If you want restore your account:
+    </p>
+    <div class="login-form">
+        <form action="{% url 'setactive' %}" method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            <p><input type="submit" value="Activate"></p>
+        </form>
+        <p>
+            <a href="{% url 'password_reset' %}">Forgotten your password?</a><br>
+        </p>
+    </div>
+
+    <div  style="clear: both">
+        If you decide delete your account forever you can use <a href="{% url 'harddelete' %}"> hard deletion </a>.<br>
+        <br>
+        <br>
+
+    </div>
+
+{% endblock %}

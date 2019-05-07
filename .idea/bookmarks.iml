@@ -29,6 +29,8 @@
       <sourceFolder url="file://$MODULE_DIR$/media/profileimg/kesha" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/media/profileimg/pavel" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/account/pp_terms" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/account/managment" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/account/managment/commands" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />

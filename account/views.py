@@ -6,36 +6,52 @@ from django.contrib import messages
 from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from social_django.models import UserSocialAuth
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.views import View
+from django.contrib.auth import logout
 
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, RemoveUser, EmailUser
 from .models import Profile
+from .tokens import account_activation_token
 
 
 # without classes
 def user_login(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/account/')
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     else:
         if request.method == 'POST':
             form = LoginForm(request.POST)
             if form.is_valid():
                 cd = form.cleaned_data
                 user = authenticate(request, username=cd['username'], password=cd['password'])
-
+                conf = Profile.objects.get(user=user)
                 if user is not None:
-                    if user.is_active:
-                        login(request, user)
-                        return HttpResponse('Authenticated successfully')
+                    if not conf.is_confirmed:
+                        messages.error(request, 'Your account is not confirmed by email.')
+                        return redirect('reActivation')
                     else:
-                        return HttpResponse('Disabled account')
+                        if user.is_active:
+                            login(request, user)
+                            messages.success(request, 'Authenticated successfully')
+                            return redirect('dashboard')
+                        else:
+                            login(request, user)
+                            messages.error(request, 'Your account is inactive!')
+                            return redirect('setactive')
                 else:
-                    return HttpResponse('Invalid login')
+                    messages.error(request, 'Invalid login or password')
+                    return redirect('login')
         else:
             form = LoginForm()
-            return render(request, 'account/login.html', {'form': form})
+            return render(request, 'registration/login.html', {'form': form})
 
 
-@login_required
 def dashboard(request):
     user = request.user
     password_login = None
@@ -72,18 +88,130 @@ def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
+
             # Create a new user object but avoid saving it yet
             new_user = user_form.save(commit=False)
+            new_user.is_active = False
             # Set the chosen password
             new_user.set_password(user_form.cleaned_data['password'])
             # Save the User object
             new_user.save()
             # Create the user profile
             Profile.objects.create(user=new_user)
-            return render(request, 'account/register_done.html', {'new_user': new_user})
+
+            # confirm by email
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('account/activate.html', {
+                'user': new_user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(new_user.pk)),
+                'token': account_activation_token.make_token(new_user),
+            })
+            to_email = user_form.cleaned_data.get('email')
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()
+
+            messages.success(request, 'Please confirm your email address to complete the registration.')
+            return redirect('reActivation')
+
     else:
         user_form = UserRegistrationForm()
     return render(request, 'account/register.html', {'user_form': user_form})
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(force_text(uidb64))
+        user = User.objects.get(pk=uid)
+        conf = Profile.objects.get(user=user)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+        conf = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        conf.is_confirmed = True
+        user.save()
+        conf.save()
+        login(request, user, backend='django.contrib.auth.backends.AllowAllUsersModelBackend')
+        messages.success(request, 'Thank you for your email confirmation.')
+        return redirect('dashboard')
+
+    else:
+        messages.error('Activation link is invalid!')
+        return redirect('reActivation')
+
+@login_required
+def setactive(request):
+    if request.user.is_active:
+        messages.success(request, 'Your account is active.')
+        return redirect('dashboard')
+    else:
+        if request.method == 'POST':
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                user = authenticate(request, username=cd['username'], password=cd['password'])
+
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        messages.success(request, 'Your account is active.')
+
+                    else:
+                        user.is_active = True
+                        user.save()
+                        login(request, user)
+                        messages.success(request, 'Your account is activated.')
+                    return redirect('dashboard')
+                else:
+                    messages.error(request, 'Invalid login')
+                    return redirect('setactive')
+        else:
+            form = LoginForm()
+            return render(request, 'account/setactive.html', {'form': form})
+
+
+def reActivation(request):
+    if request.user.is_authenticated:
+        if request.user.is_active:
+            messages.success(request, 'Your account already is active!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Your account is inactive!')
+            return redirect('setactive')
+
+    if request.method == 'POST':
+        form = EmailUser(request.POST)
+
+        if form.is_valid():
+            user = User.objects.get(email=form.cleaned_data['email'])
+            conf = Profile.objects.get(user=user)
+            if user is not None:
+                if not conf.is_confirmed:
+                    current_site = get_current_site(request)
+                    mail_subject = 'Activate your account.'
+                    message = render_to_string('account/activate.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': account_activation_token.make_token(user),
+                    })
+                    to_email = form.cleaned_data.get('email')
+                    email = EmailMessage(mail_subject, message, to=[to_email])
+                    email.send()
+
+                    messages.success(request, 'Email was sended. Please confirm your email address to complete the registration.')
+                    return redirect('reActivation')
+                else:
+                    messages.success(request, 'Your account already is confirmed!')
+                    return redirect('login')
+            else:
+                messages.error(request, 'Error')
+    else:
+        form = EmailUser()
+        return render(request, 'account/reActivation.html', {'form': form})
+
 
 
 @login_required
@@ -105,18 +233,6 @@ def edit(request):
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
     return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
-
-
-def terms(request):
-    return render(request, 'account/terms.html', {'section': 'terms'})
-
-
-def ppolice(request):
-    return render(request, 'account/ppolice.html', {'section': 'ppolice'})
-
-
-def helpAuthAlreadyAssociated(request):
-    return render(request, 'account/helpAuthAlreadyAssociated.html', {'section': 'helpAuthAlreadyAssociated'})
 
 
 @login_required
@@ -167,3 +283,67 @@ def password(request):
     else:
         form = passwordform(request.user)
     return render(request, 'account/password.html', {'form': form})
+
+"""
+def generate_password(request):
+    password = User.objects.make_random_password()
+    request.user.set_password(password)
+"""
+
+
+
+@login_required
+def softdelete(request):
+    if request.method == 'POST':
+        form = RemoveUser(request.POST)
+
+        if form.is_valid():
+            rem = User.objects.get(username=form.cleaned_data['username'])
+            if rem is not None:
+                rem.is_active = False
+                rem.save()
+                messages.success(request, 'Your account is inactive for next 30 days, after will be deleted forever.')
+                logout(request)
+                return redirect('login')
+            else:
+                messages.error(request, 'Error')
+                return render(request, 'account/softdelete.html', {'form': form})
+    else:
+        form = RemoveUser()
+        return render(request, 'account/softdelete.html', {'form': form})
+
+
+@login_required
+def harddelete(request):
+
+    if request.method == 'POST':
+        form = RemoveUser(request.POST)
+
+        if form.is_valid():
+            rem = User.objects.get(username=form.cleaned_data['username'])
+            if rem is not None:
+                rem.delete()
+                messages.success(request, 'Your account was deleted forever and ever!')
+                return redirect('login')
+            else:
+                messages.error(request, 'Error')
+    else:
+        form = RemoveUser()
+
+    return render(request, 'account/harddelete.html', {'form': form})
+
+
+def terms(request):
+    return render(request, 'account/terms.html', {'section': 'terms'})
+
+
+def ppolice(request):
+    return render(request, 'account/ppolice.html', {'section': 'ppolice'})
+
+
+def helpAuthAlreadyAssociated(request):
+    return render(request, 'account/helpAuthAlreadyAssociated.html', {'section': 'helpAuthAlreadyAssociated'})
+
+
+def emailhelp(request):
+    return render(request, 'account/emailhelp.html', {'section': 'emailhelp'})

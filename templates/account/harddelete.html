@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete account forever and ever{% endblock %}
+{% block content %}
+    <h1 style="text-align: center"><b>Delete account forever and ever</b></h1>
+    <p>
+        In clicking this submit you will delete your account forever and ever!<br>
+        It is mean, you will lose all your information and lose chance to restore it.<br>
+        May be better use <a href="{% url 'softdelete' %}"> soft deletion </a>?<br>
+        <br>
+        If you are sure, please confirm it:
+    </p>
+    <div class="login-form">
+        <form action="{% url "harddelete" %}" method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            <p><input type="submit" value="Delete"></p>
+        </form>
+    </div>
+    <div  style="clear: both">
+        <br>
+        <br>
+        <hr>
+        Please, don't do that. We will miss you.... :'(
+    </div>
+
+{% endblock %}
+
+

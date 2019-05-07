@@ -33,6 +33,14 @@
         </span>
     </div>
 
+    {% if request.user.is_authenticated %}
+        {% if not request.user.is_active %}
+            <h3 style="color: red; text-align: center"><b>Your account is  <a href="{% url 'setactive' %}">"inactive"</a></b>.</h3>
+            <p style="color: red; text-align: center"><b> It is mean, in 30 days after last login your account will be deleted.</b></p>
+            <hr>
+        {% endif %}
+    {% endif %}
+
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -46,6 +54,7 @@
 
     <div id="content">
         {% block content %}
+
         {% endblock %}
     </div>
 </body>

@@ -43,17 +43,29 @@
             First name: {{ request.user.first_name }} <br>
             Last name: {{ request.user.last_name }} <br>
             Email: {{ request.user.email }} <br>
+            Last login: {{ request.user.last_login }} <br>
             <br>
             <br>
 
-            <p>You can <a href="{% url "edit" %}">edit your profile</a>. </p>
+            <p><a href="{% url "edit" %}">Edit profile</a></p>
 
-            <p>You can config your <a href="{% url "settings" %}">login settings</a>.</p>
+            <p><a href="{% url "settings" %}">Config login settings</a></p>
 
-            {% if user.has_usable_password %}
-                <p>Also you can <a href="{% url "password" %}">change your password</a></p>
+            {% if request.user.has_usable_password %}
+                <p><a href="{% url "password" %}">Change password</a></p>
             {%  endif %}
 
+
+
+            {% if request.user.is_active %}
+                <p>Also you can  <a href="{% url "softdelete" %}">delete</a> your account. </p>
+            {% else %}
+                <p> Your account is inactive. Please, <a href="{% url 'setactive' %}">activate</a> it. </p>
+                <p>
+                    If you decide newer come back, you can use
+                    <a href="{% url "harddelete" %}">account Hard Delete.</a>
+                </p>
+            {% endif %}
         {% endif %}
     </span>
 {% endblock %}
