@@ -22,7 +22,6 @@ from .models import Profile
 from .tokens import account_activation_token
 
 
-
 # without classes
 def user_login(request):
     if request.user.is_authenticated:
@@ -34,8 +33,8 @@ def user_login(request):
                 cd = form.cleaned_data
 
                 user = authenticate(request, username=cd['username'], password=cd['password'])
-                conf = Profile.objects.get(user=user)
                 if user is not None:
+                    conf = Profile.objects.get(user=user)
                     if not conf.is_confirmed:
                         messages.error(request, 'Your account is not confirmed by email.')
                         return redirect('reActivation')
@@ -54,8 +53,6 @@ def user_login(request):
         else:
             form = LoginForm()
             return render(request, 'registration/login.html', {'form': form})
-
-
 
 
 def dashboard(request):
@@ -183,12 +180,9 @@ def setactive(request):
 
 def reActivation(request):
     if request.user.is_authenticated:
-        if request.user.is_active:
-            messages.success(request, 'Your account already is active!')
+        if request.user.profile.is_confirmed:
+            messages.success(request, 'Your email already is confirmed!')
             return redirect('dashboard')
-        else:
-            messages.error(request, 'Your account is inactive!')
-            return redirect('setactive')
 
     if request.method == 'POST':
         form = EmailUser(request.POST)

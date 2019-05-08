@@ -12,7 +12,7 @@
         <br>
     </p>
 
-    {% if request.user.email %}
+    {% if request.user.profile.is_confirmed %}
         {% if request.user.has_usable_password %}
             <p> If you are sure, please confirm it: </p>
 

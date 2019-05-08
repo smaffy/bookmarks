@@ -168,12 +168,12 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.twitter.TwitterOAuth',
     'social_core.backends.facebook.FacebookOAuth2',
 
+    'account.authentication.EmailAuthBackend',
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
     # 'django.contrib.auth.backends.ModelBackend',
 
-    'account.authentication.EmailAuthBackend',
-
 ]
+
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1231471283677887'                       # Facebook App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fd25cb7aacb45c58538e4963bd9bba3b'    # Facebook App Secret

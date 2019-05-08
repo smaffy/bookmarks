@@ -39,6 +39,17 @@
             <p style="color: red; text-align: center"><b> It is mean, in 30 days after last login your account will be deleted.</b></p>
             <hr>
         {% endif %}
+        {% if not request.user.profile.is_confirmed %}
+            <h3 style="color: red; text-align: center"><b>Your account is  <a href="{% url 'reActivation' %}">"Not confirmed"</a></b>.</h3>
+            <p style="color: red; text-align: center">
+                <b>
+                    It is mean, you can not use some options(ex. login with email, soft delete etc). <br>
+                    <a href="{% url 'reActivation' %}"> Please confirm email </a>
+
+                </b>
+            </p>
+            <hr>
+        {% endif %}
     {% endif %}
 
     {% if messages %}
