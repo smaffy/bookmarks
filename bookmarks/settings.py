@@ -193,6 +193,14 @@ SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [
 SOCIAL_AUTH_TWITTER_KEY = 'MuwxaFEU05NNeemTpYiBW1P5c'               # Twitter Consumer Key
 SOCIAL_AUTH_TWITTER_SECRET = 'Ffw6UxxemIViI9LhP71QUOMR2CehTfoRLARrMEG8es9FDBttr3'    # Twitter Consumer Secret
 
+SOCIAL_AUTH_TWITTER_SCOPE = ['email']
+SOCIAL_AUTH_TWITTER_PROFILE_EXTRA_PARAMS = {
+    'fields': 'email',
+}
+TWITTER_EXTENDED_PERMISSIONS = ['email']
+TWITTER_EXTRA_DATA = [('email', 'email'), ]
+
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '783394098930-osgm0hvf6a58doshb12ppv0r98senrcu.apps.googleusercontent.com'  # Google Consumer Key
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jWxcAyTlvG42Zx1oaEfSx0SQ'       # Google Consumer Secret
 
@@ -209,6 +217,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
