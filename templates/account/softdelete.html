@@ -13,19 +13,20 @@
     </p>
 
     {% if request.user.email %}
-        <p> If you are sure, please confirm it: </p>
+        {% if request.user.has_usable_password %}
+            <p> If you are sure, please confirm it: </p>
 
-        <div class="login-form">
-            <form action="{% url "softdelete" %}" method="post">
-                {{ form.as_p }}
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}" />
-                <p><input type="submit" value="Delete"></p>
-            </form>
-        </div>
-
+            <div class="login-form">
+                <form action="{% url "softdelete" %}" method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    <p><input type="submit" value="Delete"></p>
+                </form>
+            </div>
+        {% endif %}
     {% else %}
-        You do not have email for restore account.
+        You do not have email or password for restore account.
         Please, add email in <a href="{% url "edit" %}">Edit profile</a>.
 
     {% endif %}

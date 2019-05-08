@@ -1,5 +1,14 @@
  {% autoescape off %}
     Hi {{ request.user.username }},
+
+    You're receiving this email because you nees activate your user account at smaffy.com:8888.
+
     Please click on the link to confirm your registration,
     https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+    Your username, in case you've forgotten: {{ request.user.username }}
+
+    Thanks for using our site!
+
+    The smaffy.com:8888 team
 {% endautoescape %}

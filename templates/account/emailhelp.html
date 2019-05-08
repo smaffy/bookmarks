@@ -3,37 +3,33 @@
 {% block title %}Help{% endblock %}
 
 {% block content %}
-    <h1 style="text-align: center"><b>Exception: 'Email addresses must be unique.', while processing your registration.</b></h1>
+    <h1 style="text-align: center"><b>Exception: 'Email addresses already in use', while processing your registration.</b></h1>
 
     <div>
         <t>Why it is happened?</t>
         <br>
-        1. May be you already connect this type of authentication to your account. <br>
-        <t>
-            Please check your account and connections in social authentication. <br>
-            Also you can try disconnect this type of authentication and connect again.
-        </t>
-        <br><br>
+        You already have registration in our site. <br>
+        <br>
+        If you are sure,that this is your email, we can give you username.
+        <br>
+        <p>Please, input your email:</p>
 
-        2. May be you already was connected to site with this type of authentication. <br>
-        <t>
-            It is mean, now you have 2 accounts. <br>
-            Please, check your username. After: logout from this account, login with social authentication, control username. <br>
-            <ul>
-                <li> if the same username: please contact admin. </li>
-                <li>
-                    if another username:
-                    <ul>
-                        <li> You can use 2 accounts, but you can not connect this social authentication <br>
-                            to classical account, because it is already in use. </li>
-                        <li> You can choose account, what is more important for you, and delete another (hard delete).  </li>
-                    </ul>
-                </li>
+        <form action="." method="post">
+            {{ form.as_p }}
+            <p><input type="submit" value="check"></p>
+            {% csrf_token %}
+        </form>
+        <br>
+        <br>
+    </div>
 
-            </ul>
-
-        </t>
-
+    <div>
+        {% if another_user %}
+            Username: {{ another_user.username }} <br>
+            Now you can use it for <a href="{% url 'password_reset' %}"> reset password </a>.
+            <br>
+            If it anyway did not help you please contact admin.
+        {% endif %}
     </div>
 
 

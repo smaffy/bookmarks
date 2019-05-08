@@ -11,13 +11,16 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+
 from django.core.mail import EmailMessage
 from django.views import View
 from django.contrib.auth import logout
+from django.contrib.auth import views as auth_views
 
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, RemoveUser, EmailUser
 from .models import Profile
 from .tokens import account_activation_token
+
 
 
 # without classes
@@ -29,6 +32,7 @@ def user_login(request):
             form = LoginForm(request.POST)
             if form.is_valid():
                 cd = form.cleaned_data
+
                 user = authenticate(request, username=cd['username'], password=cd['password'])
                 conf = Profile.objects.get(user=user)
                 if user is not None:
@@ -52,7 +56,12 @@ def user_login(request):
             return render(request, 'registration/login.html', {'form': form})
 
 
+
+
 def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     user = request.user
     password_login = None
 
@@ -138,10 +147,10 @@ def activate(request, uidb64, token):
         return redirect('dashboard')
 
     else:
-        messages.error('Activation link is invalid!')
+        messages.error(request, 'Activation link is invalid!')
         return redirect('reActivation')
 
-@login_required
+
 def setactive(request):
     if request.user.is_active:
         messages.success(request, 'Your account is active.')
@@ -216,6 +225,7 @@ def reActivation(request):
 
 @login_required
 def edit(request):
+
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
 
@@ -235,12 +245,15 @@ def edit(request):
     return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
+
 @login_required
 def settings(request):
     user = request.user
 
+
     try:
         facebook_login = user.social_auth.get(provider='facebook')
+
     except UserSocialAuth.DoesNotExist:
         facebook_login = None
 
@@ -264,7 +277,8 @@ def settings(request):
         'can_disconnect': can_disconnect
     })
 
-@login_required
+
+
 def password(request):
     if request.user.has_usable_password():
         passwordform = PasswordChangeForm
@@ -289,7 +303,6 @@ def generate_password(request):
     password = User.objects.make_random_password()
     request.user.set_password(password)
 """
-
 
 
 @login_required
@@ -346,4 +359,42 @@ def helpAuthAlreadyAssociated(request):
 
 
 def emailhelp(request):
-    return render(request, 'account/emailhelp.html', {'section': 'emailhelp'})
+    another_user = None
+    if request.user.is_authenticated:
+        messages.success(request, 'You already login!')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = EmailUser(request.POST)
+
+        if form.is_valid():
+            another_user = User.objects.get(email=form.cleaned_data['email'])
+            if not another_user.has_usable_password():
+                another_user.password = User.objects.make_random_password()
+                another_user.save()
+    else:
+        form = EmailUser()
+    return render(request, 'account/emailhelp.html', {'form': form, 'another_user': another_user})
+
+
+def newpass(request):
+    another_user = None
+    if request.user.is_authenticated:
+        messages.success(request, 'You already login!')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = EmailUser(request.POST)
+
+        if form.is_valid():
+            another_user = User.objects.get(email=form.cleaned_data['email'])
+            if not another_user.has_usable_password():
+                another_user.password = User.objects.make_random_password()
+                another_user.save()
+                messages.success(request, 'Your account get password. Please, use "fogot password".')
+            else:
+                messages.error(request, 'Your account already has password. Please contact admin for restore access.')
+    else:
+        form = EmailUser()
+    return render(request, 'account/newpass.html', {'form': form, 'another_user': another_user})
+
