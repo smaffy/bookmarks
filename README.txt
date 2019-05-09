@@ -1,5 +1,5 @@
 
-    This is some variant of registration/login.
+    This is variant of registration/login.
 
 In start you need to do:
         1. pip install django-sslserver==0.20 (sslserver in INSTALLED_APPS) or use another sslserver,
