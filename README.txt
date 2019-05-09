@@ -84,7 +84,7 @@ Passwords:
     * emailhelp
     * helpAuthAlreadyAssociated
 
-Another content for:
+Another content and permissions for:
     * user.is_authenticated
     * user.is_active
     * user.profile.is_confirmed
@@ -95,4 +95,4 @@ Another content for:
     * google_login
 
 
-** new problem: "reset password" send email, without check user.
+** new unsolved problem: "reset password" do not say, that no user with that email
