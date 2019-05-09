@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Help{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center"><b>1. No password and did not get "Forgotten password" email.</b></h1>
+
+    <div>
+        <t>Why it is happened?</t>
+        <br>
+        May be you forgot to set password. <br>
+        Use your social login.<br>
+        <br>
+        If you can not use social login, we will set for you random password, <br>
+        and after you can use "Forgotten password" to reset it.
+
+        <br>
+        <p>Please, input your email:</p>
+
+        <form action="." method="post">
+            {{ form.as_p }}
+            <p><input type="submit" value="check"></p>
+            {% csrf_token %}
+        </form>
+        <br>
+        <br>
+    </div>
+
+    <div>
+        {% if another_user %}
+            Username: {{ another_user.username }} <br>
+
+            Now you can use <a href="{% url 'password_reset' %}"> reset password </a>.
+            <br>
+            If it anyway did not help you please contact admin.
+        {% endif %}
+    </div>
+    <hr>
+
+    <h1 style="text-align: center"><b>2. Social login do not work.</b></h1>
+
+    <div>
+        <t>Why it is happened?</t>
+        <br>
+        May be you delete your account and now it is inactive. <br>
+        Please, use classical "login/password" and activate it. <br>
+
+    </div>
+
+{% endblock %}

@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     # 'django_extensions',            # runserver_plus --cert /tmp/cert
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -154,8 +156,8 @@ LOGOUT_URL = 'logout'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'rudakovacz@gmail.com'
-EMAIL_HOST_PASSWORD = 'Pavel555'
+EMAIL_HOST_USER = 'rudakovapraha@gmail.com'
+EMAIL_HOST_PASSWORD = 'aa987654'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

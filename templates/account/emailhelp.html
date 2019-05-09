@@ -29,6 +29,8 @@
             Now you can use it for <a href="{% url 'password_reset' %}"> reset password </a>.
             <br>
             If it anyway did not help you please contact admin.
+        {% else %}
+            You do not have account. please contact admin.
         {% endif %}
     </div>
 
