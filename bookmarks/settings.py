@@ -25,6 +25,8 @@ SECRET_KEY = 'pem7+_&do=%r39$j$p7si)2i%p$pd7u*te9bn9mno4ywt7@^_4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# THUMBNAIL_DEBUG = True
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'smafy.com', '0.0.0.0', 'smaffy.com']
 
 SITE_ID = 1
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
 
     'phonenumber_field',
     'social_django',
-    # 'django_extensions',            # runserver_plus --cert /tmp/cert
+    'sorl.thumbnail',
 ]
 
 
