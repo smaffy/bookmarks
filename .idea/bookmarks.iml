@@ -39,6 +39,7 @@
       <sourceFolder url="file://$MODULE_DIR$/images/static" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/static/css" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/static/js" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
