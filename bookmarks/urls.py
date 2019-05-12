@@ -23,6 +23,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     # auth with Facebook, Twitter, Google
     path('oauth/', include('social_django.urls', namespace='social')),
+    path('images/', include('images.urls', namespace='images')),
 
 ]
 

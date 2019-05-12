@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "sslserver",            # runsslserver smaffy.com:8888, 0.0.0.0:8888
 
     'account.apps.AccountConfig',
+    'images.apps.ImagesConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
