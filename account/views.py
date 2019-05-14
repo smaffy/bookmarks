@@ -433,7 +433,7 @@ def user_list(request):
     if request.is_ajax():
         return render(request,
                       'account/user/list_ajax.html',
-                      {'section': 'images', 'users': users})
+                      {'section': 'people', 'users': users})
 
     return render(request,
                   'account/user/list.html',
