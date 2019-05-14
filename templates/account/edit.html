@@ -4,6 +4,14 @@
 
 {% block content %}
     <h1>Edit your account</h1>
+
+    {% load thumbnail %}
+    {% thumbnail user.profile.photo "300" as photo %}
+        <a href="{{ user.profile.photo.url }}">
+            <img src="{{ photo.url }}" style="float: right">
+        </a>
+    {% endthumbnail %}
+
     <p>You can edit your account using the following form:</p>
     <form action="." method="post" enctype="multipart/form-data">
         {{ user_form.as_p }}

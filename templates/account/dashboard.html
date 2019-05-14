@@ -12,73 +12,14 @@
             image{{ total_images_created|pluralize }}.
         </p>
     {% endwith %}
-
-    <p>
-        Drag the following button to your bookmarks toolbar to bookmark <br><br>
-        images from other websites →
-        <a href="javascript:{% include "images/bookmarklet_launcher.js" %}" class="button">Bookmark it</a>
-    </p>
-
-    <br>
     <hr>
 
-    <span class="user">
-        {% if request.user.is_authenticated %}
+    <h2>What's happening</h2>
 
-            {% if user.has_usable_password %}
-                <p>Classical account. Welcome, {{ request.user.first_name }}</p>
-            {% endif %}
+    <div id="action-list">
+        {% for action in actions %}
+        {% include "actions/action/detail.html" %}
+        {% endfor %}
+    </div>
 
-            {% if facebook_login %}
-                {% if user.has_usable_password %} additional login:  {% endif %}
-                <p>Facebook account. Connected as <t><a href="https://facebook.com/{{ facebook_login.extra_data.id }}/"
-                                   target="_blank">{{ facebook_login.extra_data.id }}</a></t></p>
-            {% endif %}
-
-            {% if twitter_login %}
-                {% if user.has_usable_password %} additional login:  {% endif %}
-                <p>Twitter account. Connected as <t><a href="https://twitter.com/{{ twitter_login.extra_data.access_token.screen_name }}/"
-                                   target="_blank">@{{ twitter_login.extra_data.access_token.screen_name }}</a></t></p>
-            {% endif %}
-
-            {% if google_login %}
-                {% if user.has_usable_password %} additional login:  {% endif %}
-                <p>Google account. Connected as <t><a href="https://google.com/{{ google_login.extra_data.access_token.screen_name }}/"
-                                  target="_blank">{{ google_login.uid }}</a></t></p>
-            {%  endif %}
-
-
-
-            <br>
-                <t><b>  You logged in like:</b></t>
-            <br><br>
-            Username: {{ request.user.username }} <br>
-            First name: {{ request.user.first_name }} <br>
-            Last name: {{ request.user.last_name }} <br>
-            Email: {{ request.user.email }} <br>
-            Last login: {{ request.user.last_login }} <br>
-            <br>
-            <br>
-
-            <p><a href="{% url "edit" %}">Edit profile</a></p>
-
-            <p><a href="{% url "settings" %}">Config login settings</a></p>
-
-            {% if request.user.has_usable_password %}
-                <p><a href="{% url "password" %}">Change password</a></p>
-            {%  endif %}
-
-
-
-            {% if request.user.is_active %}
-                <p>Also you can  <a href="{% url "softdelete" %}">delete</a> your account. </p>
-            {% else %}
-                <p> Your account is inactive. Please, <a href="{% url 'setactive' %}">activate</a> it. </p>
-                <p>
-                    If you decide newer come back, you can use
-                    <a href="{% url "harddelete" %}">account Hard Delete.</a>
-                </p>
-            {% endif %}
-        {% endif %}
-    </span>
 {% endblock %}

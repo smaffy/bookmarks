@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -11,21 +11,26 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-
+from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
-from django.views import View
 from django.contrib.auth import logout
-from django.contrib.auth import views as auth_views
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from common.decorators import ajax_required
+
 
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, RemoveUser, EmailUser
-from .models import Profile
+from .models import Profile, Contact
 from .tokens import account_activation_token
+from actions.utils import create_action
+from actions.models import Action
 
 
 # without classes
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('profile')
     else:
         if request.method == 'POST':
             form = LoginForm(request.POST)
@@ -42,7 +47,7 @@ def user_login(request):
                         if user.is_active:
                             login(request, user)
                             messages.success(request, 'Authenticated successfully')
-                            return redirect('dashboard')
+                            return redirect('profile')
                         else:
                             login(request, user)
                             messages.error(request, 'Your account is inactive!')
@@ -55,7 +60,20 @@ def user_login(request):
             return render(request, 'registration/login.html', {'form': form})
 
 
+@login_required
 def dashboard(request):
+    # show all actions
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list('id', flat=True)
+
+    if following_ids:       # if user follow somebody
+        actions = actions.filter(user_id__in=following_ids)
+    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+
+    return render(request, 'account/dashboard.html', {'section': 'dashboard', 'actions': actions})
+
+
+def profile(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
@@ -82,12 +100,12 @@ def dashboard(request):
             if not google_login:
                 password_login = request.user.username
 
-    return render(request, 'account/dashboard.html', {'section': 'dashboard',
-                                                      'facebook_login': facebook_login,
-                                                      'twitter_login': twitter_login,
-                                                      'google_login': google_login,
-                                                      'password_login': password_login
-                                                      })
+    return render(request, 'account/profile.html', {'section': 'profile',
+                                                    'facebook_login': facebook_login,
+                                                    'twitter_login': twitter_login,
+                                                    'google_login': google_login,
+                                                    'password_login': password_login
+                                                    })
 
 
 def register(request):
@@ -104,6 +122,7 @@ def register(request):
             new_user.save()
             # Create the user profile
             Profile.objects.create(user=new_user)
+            create_action(new_user, 'has created an account')
 
             # confirm by email
             current_site = get_current_site(request)
@@ -141,7 +160,7 @@ def activate(request, uidb64, token):
         conf.save()
         login(request, user, backend='django.contrib.auth.backends.AllowAllUsersModelBackend')
         messages.success(request, 'Thank you for your email confirmation.')
-        return redirect('dashboard')
+        return redirect('profile')
 
     else:
         messages.error(request, 'Activation link is invalid!')
@@ -151,7 +170,7 @@ def activate(request, uidb64, token):
 def setactive(request):
     if request.user.is_active:
         messages.success(request, 'Your account is active.')
-        return redirect('dashboard')
+        return redirect('profile')
     else:
         if request.method == 'POST':
             form = LoginForm(request.POST)
@@ -169,7 +188,7 @@ def setactive(request):
                         user.save()
                         login(request, user)
                         messages.success(request, 'Your account is activated.')
-                    return redirect('dashboard')
+                    return redirect('profile')
                 else:
                     messages.error(request, 'Invalid login')
                     return redirect('setactive')
@@ -182,7 +201,7 @@ def reActivation(request):
     if request.user.is_authenticated:
         if request.user.profile.is_confirmed:
             messages.success(request, 'Your email already is confirmed!')
-            return redirect('dashboard')
+            return redirect('profile')
 
     if request.method == 'POST':
         form = EmailUser(request.POST)
@@ -356,7 +375,7 @@ def emailhelp(request):
     another_user = None
     if request.user.is_authenticated:
         messages.success(request, 'You already login!')
-        return redirect('dashboard')
+        return redirect('profile')
 
     if request.method == 'POST':
         form = EmailUser(request.POST)
@@ -375,7 +394,7 @@ def newpass(request):
     another_user = None
     if request.user.is_authenticated:
         messages.success(request, 'You already login!')
-        return redirect('dashboard')
+        return redirect('profile')
 
     if request.method == 'POST':
         form = EmailUser(request.POST)
@@ -392,3 +411,56 @@ def newpass(request):
         form = EmailUser()
     return render(request, 'account/newpass.html', {'form': form, 'another_user': another_user})
 
+
+@login_required
+def user_list(request):
+    users = User.objects.filter(is_active=True)
+    paginator = Paginator(users, 8)
+    page = request.GET.get('page')
+
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer deliver the first page
+        users = paginator.page(1)
+    except EmptyPage:
+        if request.is_ajax():
+            # If the request is AJAX and the page is out of range
+            # return an empty page
+            return HttpResponse('')
+        # If page is out of range deliver last page of results
+        users = paginator.page(paginator.num_pages)
+    if request.is_ajax():
+        return render(request,
+                      'account/user/list_ajax.html',
+                      {'section': 'images', 'users': users})
+
+    return render(request,
+                  'account/user/list.html',
+                  {'section': 'people', 'users': users})
+
+
+@login_required
+def user_detail(request, username):
+    user = get_object_or_404(User, username=username, is_active=True)
+    return render(request, 'account/user/detail.html', {'section': 'people', 'user': user})
+
+
+@ajax_required
+@require_POST
+@login_required
+def user_follow(request):
+    user_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if user_id and action:
+        try:
+            user = User.objects.get(id=user_id)
+            if action == 'follow':
+                Contact.objects.get_or_create(user_from=request.user, user_to=user)
+                create_action(request.user, 'is following', user)
+            else:
+                Contact.objects.filter(user_from=request.user, user_to=user).delete()
+            return JsonResponse({'status': 'ok'})
+        except User.DoesNotExist:
+            return JsonResponse({'status': 'ko'})
+    return JsonResponse({'status': 'ko'})

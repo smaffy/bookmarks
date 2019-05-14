@@ -27,7 +27,8 @@ urlpatterns = [
     # registration (new user)
     path('register/', views.register, name='register'),
 
-    # edit profile
+    # profile
+    path('profile/', views.profile, name='profile'),
     path('edit/', views.edit, name='edit'),
 
     # Privacy Policy and Terms and Conditions
@@ -51,5 +52,10 @@ urlpatterns = [
 
     # help with non unique email
     path('register/emailhelp/', views.emailhelp, name='emailhelp'),
+
+    # view for profile list and details
+    path('users/', views.user_list, name='user_list'),
+    path('users/follow/', views.user_follow, name='user_follow'),
+    path('users/<username>/', views.user_detail, name='user_detail'),
 
 ]

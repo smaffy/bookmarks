@@ -84,7 +84,7 @@ Passwords:
     * emailhelp
     * helpAuthAlreadyAssociated
 
-Another content and permissions for:
+Another content for:
     * user.is_authenticated
     * user.is_active
     * user.profile.is_confirmed
@@ -95,4 +95,9 @@ Another content and permissions for:
     * google_login
 
 
-** new unsolved problem: "reset password" do not say, that no user with that email
+Users can:
+    * add images
+    * Drag the button "bookmark it" to bookmarks toolbar to bookmark images from other websites - jQuerity
+    * like/unlike (ajax) + numb of likes
+    * list of images
+    * ajax pagination

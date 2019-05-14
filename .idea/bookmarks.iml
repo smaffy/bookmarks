@@ -23,23 +23,38 @@
       <sourceFolder url="file://$MODULE_DIR$/templates/account" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/registration" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/media" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/profileimg" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/admin" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/andrej" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/kesha" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/profileimg/pavel" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/admin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/andrej" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/kesha" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/pavel" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/account/pp_terms" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/account/managment" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/account/managment/commands" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/migrations" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/media/images" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/images/image" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/templates/images" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/static" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/static/css" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/images/static/js" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/templates/account/user" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/default" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/cache" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/2019" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/2019/05" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/2019/05/11" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/2019/05/12" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/2019/05/13" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/images" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/JekaterinaArbatova" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/media/images/profileimg/KatjaLimberg" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/actions" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/actions/migrations" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/templates/actions" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/templates/actions/action" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />

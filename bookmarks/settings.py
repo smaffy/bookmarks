@@ -39,10 +39,11 @@ INSTALLED_APPS = [
 
     'account.apps.AccountConfig',
     'images.apps.ImagesConfig',
+    'actions.apps.ActionsConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes',      # follow
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -151,7 +152,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # auth
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'profile'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
@@ -183,9 +184,9 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_FACEBOOK_KEY = '1231471283677887'                       # Facebook App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fd25cb7aacb45c58538e4963bd9bba3b'    # Facebook App Secret
 
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_link']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-  'fields': 'id, name, email, picture, link'
+  'fields': 'id, name, email, picture'
 }
 SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [
     ('name', 'name'),
@@ -228,4 +229,11 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
     'account.social.get_or_create_profile',
+    'account.social.save_profile_picture',
 )
+
+from django.urls import reverse_lazy
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
+}
