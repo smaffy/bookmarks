@@ -68,7 +68,27 @@ def dashboard(request):
 
     if following_ids:       # if user follow somebody
         actions = actions.filter(user_id__in=following_ids)
-    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+    actions = actions.select_related('user', 'user__profile').prefetch_related('target')
+
+    paginator = Paginator(actions, 10)
+    page = request.GET.get('page')
+
+    try:
+        actions = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer deliver the first page
+        actions = paginator.page(1)
+    except EmptyPage:
+        if request.is_ajax():
+            # If the request is AJAX and the page is out of range
+            # return an empty page
+            return HttpResponse('')
+        # If page is out of range deliver last page of results
+        actions = paginator.page(paginator.num_pages)
+    if request.is_ajax():
+        return render(request,
+                      'account/user/dashboard_ajax.html',
+                      {'section': 'dashboard', 'actions': actions})
 
     return render(request, 'account/dashboard.html', {'section': 'dashboard', 'actions': actions})
 
@@ -414,8 +434,8 @@ def newpass(request):
 
 @login_required
 def user_list(request):
-    users = User.objects.filter(is_active=True)
-    paginator = Paginator(users, 8)
+    users = User.objects.filter(is_active=True).order_by("id")
+    paginator = Paginator(users, 15)
     page = request.GET.get('page')
 
     try:
@@ -433,11 +453,11 @@ def user_list(request):
     if request.is_ajax():
         return render(request,
                       'account/user/list_ajax.html',
-                      {'section': 'people', 'users': users})
+                      {'section': 'users', 'users': users})
 
     return render(request,
                   'account/user/list.html',
-                  {'section': 'people', 'users': users})
+                  {'section': 'users', 'users': users})
 
 
 @login_required

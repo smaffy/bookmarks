@@ -26,8 +26,8 @@ class Profile(models.Model):
 
     birthdate = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='n', null=True)
-    address = models.CharField(max_length=150, null=True)
-    phone = PhoneNumberField(null=True)
+    address = models.CharField(max_length=150, null=True, blank=True)
+    phone = PhoneNumberField(null=True, blank=True)
     photo = models.ImageField(upload_to=upload_path_handler, default='images/profileimg/default/default.jpg')
 
     def __str__(self):

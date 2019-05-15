@@ -4,14 +4,23 @@
     {% for user in users %}
         <div class="user">
             <a href="{{ user.get_absolute_url }}">
-                {% thumbnail user.profile.photo "180x180" crop="100%" as us %}
-                    <img src="{{ us.url }}">
+                {% thumbnail user.profile.photo "300x300" crop="100%" as us %}
+                    <a href="{{ user.get_absolute_url }}">
+                        <img src="{{ us.url }}">
+                    </a>
                 {% endthumbnail %}
             </a>
+
             <div class="info">
+                {% if user.get_full_name %}
                 <a href="{{ user.get_absolute_url }}" class="title">
                     {{ user.get_full_name }}
                 </a>
+                {% else %}
+                    <a href="{{ user.get_absolute_url }}" class="title">
+                        {{ user.username }}
+                    </a>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
