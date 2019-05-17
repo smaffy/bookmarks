@@ -70,7 +70,7 @@ def dashboard(request):
         actions = actions.filter(user_id__in=following_ids)
     actions = actions.select_related('user', 'user__profile').prefetch_related('target')
 
-    paginator = Paginator(actions, 10)
+    paginator = Paginator(actions, 20)
     page = request.GET.get('page')
 
     try:
@@ -435,7 +435,7 @@ def newpass(request):
 @login_required
 def user_list(request):
     users = User.objects.filter(is_active=True).order_by("id")
-    paginator = Paginator(users, 15)
+    paginator = Paginator(users, 8)
     page = request.GET.get('page')
 
     try:
