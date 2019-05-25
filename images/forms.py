@@ -25,7 +25,6 @@ class ImageCreateForm(forms.ModelForm):
 
     def save(self, force_insert=False, force_update=False, commit=True):
         image = super(ImageCreateForm, self).save(commit=False)
-
         image_url = self.cleaned_data['url']
         image_name = '{}.{}'.format(slugify(image.title), image_url.rsplit('.', 1)[1].lower())
         # download from url img
@@ -35,4 +34,19 @@ class ImageCreateForm(forms.ModelForm):
         if commit:
             image.save()
         return image
+
+
+class ImageAddForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ('title', 'image', 'description', )
+
+
+class ImageEditForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ('title', 'description', )
+
+
+
 

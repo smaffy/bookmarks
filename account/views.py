@@ -142,6 +142,8 @@ def register(request):
             new_user.save()
             # Create the user profile
             Profile.objects.create(user=new_user)
+            new_user.profile.rating += 20
+            new_user.profile.save()
             create_action(new_user, 'has created an account')
 
             # confirm by email
@@ -176,6 +178,8 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         conf.is_confirmed = True
+        user.profile.rating += 10
+        user.profile.save()
         user.save()
         conf.save()
         login(request, user, backend='django.contrib.auth.backends.AllowAllUsersModelBackend')
@@ -205,6 +209,8 @@ def setactive(request):
 
                     else:
                         user.is_active = True
+                        user.profile.rating += 5
+                        user.profile.save()
                         user.save()
                         login(request, user)
                         messages.success(request, 'Your account is activated.')
@@ -311,7 +317,6 @@ def settings(request):
     })
 
 
-
 def password(request):
     if request.user.has_usable_password():
         passwordform = PasswordChangeForm
@@ -347,6 +352,10 @@ def softdelete(request):
             rem = User.objects.get(username=form.cleaned_data['username'])
             if rem is not None:
                 rem.is_active = False
+                try:
+                    rem.profile.rating -= 10
+                except:
+                    rem.profile.rating = 0
                 rem.save()
                 messages.success(request, 'Your account is inactive for next 30 days, after will be deleted forever.')
                 logout(request)
@@ -434,7 +443,7 @@ def newpass(request):
 
 @login_required
 def user_list(request):
-    users = User.objects.filter(is_active=True).order_by("id")
+    users = User.objects.filter(is_active=True).order_by('-profile__rating')
     paginator = Paginator(users, 8)
     page = request.GET.get('page')
 
@@ -478,8 +487,17 @@ def user_follow(request):
             if action == 'follow':
                 Contact.objects.get_or_create(user_from=request.user, user_to=user)
                 create_action(request.user, 'is following', user)
+                request.user.profile.rating += 5
+                request.user.profile.save()
+                if not request.user == user:
+                    user.profile.rating += 10
+                    user.profile.save()
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()
+                request.user.profile.rating -= 5
+                request.user.profile.save()
+                user.profile.rating -= 5
+                user.profile.save()
             return JsonResponse({'status': 'ok'})
         except User.DoesNotExist:
             return JsonResponse({'status': 'ko'})

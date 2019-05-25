@@ -1,26 +1,39 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 
 {% block title %}Profile{% endblock %}
 
 {% block content %}
 
-    <h1>Profile</h1>
+    <h1>{{ user.get_full_name }}. Profile</h1>
+
+    <div class="profile-info" style="float: right">
+        <a href="{{ user.get_absolute_url }}">
+            {% thumbnail user.profile.photo "300x300" crop="100%" as im %}
+                <img src="{{ im.url }}" class="user-detail">
+            {% endthumbnail %}
+        </a>
+    </div>
+
+    <span class="count">
+        Rating: {{ user.profile.rating }}
+    </span>
 
     {% with total_images_created=request.user.images_created.count %}
-        <p>
-            Welcome to your dashboard. You have bookmarked {{ total_images_created }}
-            image{{ total_images_created|pluralize }}.
-        </p>
+        <a href="{{ user.get_absolute_url }}">
+            <span class="count">
+                <span class="total">{{ total_images_created }}</span>
+                Images
+            </span>
+        </a>
     {% endwith %}
 
-    <p>
-        Drag the following button to your bookmarks toolbar to bookmark <br><br>
-        images from other websites →
-        <a href="javascript:{% include "images/bookmarklet_launcher.js" %}" class="button">Bookmark it</a>
-    </p>
-
-    <br>
-    <hr>
+    {% with total_followers=user.followers.count %}
+        <span class="count">
+            <span class="total">{{ total_followers }}</span>
+            follower{{ total_followers|pluralize }}
+        </span>
+    {% endwith %}
 
     <span class="user">
         {% if request.user.is_authenticated %}
@@ -58,7 +71,21 @@
             Email: {{ request.user.email }} <br>
             Last login: {{ request.user.last_login }} <br>
             <br>
-            <br>
+            <hr>
+        {% endif %}
+    </span>
+
+    <p>
+        Drag the following button to your bookmarks toolbar to bookmark <br><br>
+        images from other websites →
+        <a href="javascript:{% include "images/bookmarklet_launcher.js" %}" class="button">Bookmark it</a>
+    </p>
+
+    <br>
+    <hr>
+
+    <span class="user">
+        {% if request.user.is_authenticated %}
 
             <p><a href="{% url "edit" %}">Edit profile</a></p>
 

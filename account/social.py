@@ -12,6 +12,7 @@ def get_or_create_profile(strategy, details, response, user, *args, **kwargs):
         pass
     else:
         new_profile = Profile(user=user)
+        user.profile.rating += 20
         new_profile.save()
 
     return kwargs

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Edit image{% endblock %}
+
+{% block content %}
+    <h1>{{ image.title }}</h1>
+
+    {% load thumbnail %}
+    {% thumbnail image.image "300" as im %}
+        <a href="{{ image.image.url }}">
+            <img src="{{ im.url }}" class="image-detail">
+        </a>
+    {% endthumbnail %}
+
+    <p>You can edit your image using the following form:</p>
+    <form action="." method="post" enctype="multipart/form-data">
+        {{ form.as_p }}
+        {% csrf_token %}
+    <p><input type="submit" value="Save changes"></p>
+    </form>
+
+    <div style="clear: both">
+        {% if request.user == image.user %}
+            <hr>
+            You are author of this publication.
+
+            <div class="image-info">
+                <a href="{% url 'images:delete' image.id image.slug %}" class="button" style="float: right">Delete</a>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

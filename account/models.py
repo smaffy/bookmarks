@@ -29,6 +29,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=150, null=True, blank=True)
     phone = PhoneNumberField(null=True, blank=True)
     photo = models.ImageField(upload_to=upload_path_handler, default='images/profileimg/default/default.jpg')
+    rating = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)

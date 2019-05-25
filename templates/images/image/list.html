@@ -4,6 +4,8 @@
 
 {% block content %}
     <h1>Images bookmarked</h1>
+
+    <a href="{% url 'images:add' %}" class="button" style="float: right"><b style="font-size: xx-large">+</b></a>
     <div id="image-list">
         {% include "images/image/list_ajax.html" %}
     </div>

@@ -35,7 +35,7 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
-    "sslserver",            # runsslserver smaffy.com:8888, 0.0.0.0:8888
+    'sslserver',            # runsslserver smaffy.com:8888, 0.0.0.0:8888
 
     'account.apps.AccountConfig',
     'images.apps.ImagesConfig',
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'social_django',
     'sorl.thumbnail',
+    'redis',
 ]
 
 
@@ -237,3 +238,8 @@ from django.urls import reverse_lazy
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])
 }
+
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
