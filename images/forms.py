@@ -3,6 +3,8 @@ from urllib import request
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
 
+from taggit.forms import TagWidget
+
 from .models import Image
 
 
@@ -10,9 +12,10 @@ class ImageCreateForm(forms.ModelForm):
 
     class Meta:
         model = Image
-        fields = ('title', 'url', 'description')
+        fields = ('title', 'url', 'description', 'tags', )
         widgets = {
             'url': forms.HiddenInput,
+            'tags': TagWidget(),
         }
 
     def clean_url(self):
@@ -39,13 +42,19 @@ class ImageCreateForm(forms.ModelForm):
 class ImageAddForm(forms.ModelForm):
     class Meta:
         model = Image
-        fields = ('title', 'image', 'description', )
+        fields = ('title', 'image', 'description', 'tags')
+        widgets = {
+            'tags': TagWidget(),
+        }
 
 
 class ImageEditForm(forms.ModelForm):
     class Meta:
         model = Image
-        fields = ('title', 'description', )
+        fields = ('title', 'description', 'tags')
+        widgets = {
+            'tags': TagWidget(),
+        }
 
 
 

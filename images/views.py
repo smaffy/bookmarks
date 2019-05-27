@@ -11,6 +11,8 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.text import slugify
 
+from taggit.models import Tag
+
 from images.models import Image
 from .forms import ImageCreateForm, ImageAddForm, ImageEditForm
 from common.decorators import ajax_required
@@ -35,6 +37,15 @@ def image_create(request):
             new_item = form.save(commit=False)
             # set user
             new_item.user = request.user
+            new_item.save()
+            tags = form.cleaned_data['tags']
+
+            for tag in tags:
+                new_item.tags.add(tag)
+            new_item.save()
+            # Without this next line the tags won't be saved.
+            form.save_m2m()
+
             request.user.profile.rating += 3
             request.user.profile.save()
             new_item.save()
@@ -57,11 +68,24 @@ def image_add(request):
         form = ImageAddForm(data=request.POST, files=request.FILES)
 
         if form.is_valid():
+            imag = form.save(commit=False)
             new_item = Image(image=request.FILES['image'], user=request.user, title=form.cleaned_data['title'])
             new_item.description = form.cleaned_data['description']
+            new_item.tags = form.cleaned_data['tags']
             request.user.profile.rating += 3
             request.user.profile.save()
             new_item.save()
+
+            imag.user = request.user
+            imag.save()
+            tags = form.cleaned_data['tags']
+
+            for tag in tags:
+                imag.tags.add(tag)
+            imag.save()
+            # Without this next line the tags won't be saved.
+            form.save_m2m()
+
             create_action(request.user, 'bookmarked image', new_item)
 
             messages.success(request, 'Image added successfully')
@@ -107,8 +131,14 @@ def image_like(request):
 
 
 @login_required
-def image_list(request):
+def image_list(request, tag__slug=None):
     images = Image.objects.order_by('-total_likes')
+    tag = None
+
+    if tag__slug:
+        tag = get_object_or_404(Tag, slug=tag__slug)
+        images = Image.objects.filter(tags__in=[tag]).order_by('-total_likes')
+
     paginator = Paginator(images, 10)
     page = request.GET.get('page')
 
@@ -127,10 +157,10 @@ def image_list(request):
     if request.is_ajax():
         return render(request,
                       'images/image/list_ajax.html',
-                      {'section': 'images', 'images': images})
+                      {'section': 'images', 'images': images, 'tag': tag})
     return render(request,
                   'images/image/list.html',
-                  {'section': 'images', 'images': images})
+                  {'section': 'images', 'images': images, 'tag': tag})
 
 
 @login_required
@@ -149,13 +179,20 @@ def image_delete(request, id, slug):
 
 @login_required
 def image_edit(request, id, slug):
-    image = get_object_or_404(Image, id=id, slug=slug)
+    image = Image.objects.get(id=id, slug=slug)
     if request.user:
         if request.method == 'POST':
-            form = ImageEditForm(instance=request.user, data=request.POST, files=request.FILES)
+            form = ImageEditForm(data=request.POST, files=request.FILES)
 
             if form.is_valid():
-                form.save()
+                image.title = form.cleaned_data['title']
+                image.description = form.cleaned_data['description']
+                tags = form.cleaned_data['tags']
+                image.tags.clear()
+                for tag in tags:
+                    image.tags.add(tag)
+                image.save()
+
                 messages.success(request, 'Image updated successfully.')
                 return redirect('images:detail', id=image.id, slug=image.slug)
 

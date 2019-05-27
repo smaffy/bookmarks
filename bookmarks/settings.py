@@ -36,6 +36,7 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     'sslserver',            # runsslserver smaffy.com:8888, 0.0.0.0:8888
+    'pytils',               # russian
 
     'account.apps.AccountConfig',
     'images.apps.ImagesConfig',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'social_django',
     'sorl.thumbnail',
     'redis',
+    'taggit',
 ]
 
 
@@ -243,3 +245,6 @@ ABSOLUTE_URL_OVERRIDES = {
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 1
+
+
+TAGGIT_CASE_INSENSITIVE = True

@@ -5,6 +5,18 @@
 {% block content %}
     <h1>{{ image.title }}</h1>
 
+    {%  if image.tags %}
+        <p class="tags">
+            Tags:
+            {% for tag in image.tags.all %}
+                <a href="{% url "images:list_by_tag" tag.slug %}">
+                    {{ tag.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+    {%  endif %}
+
     {% load thumbnail %}
     {% thumbnail image.image "300" as im %}
         <a href="{{ image.image.url }}">
